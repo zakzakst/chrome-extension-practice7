@@ -49,7 +49,9 @@ export const SidePanelContent = ({ sheetInfos, onSubmit }: Props) => {
       (info) => info.sheetName === selectedSheet,
     );
     if (!sheetData) return [];
-    const pages = [...new Set(sheetData.formItems.map((item) => item.page))];
+    const pages = [
+      ...new Set(sheetData.formItems.map((item) => item.page)),
+    ].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
     return pages;
   }, [sheetInfos, selectedSheet]);
 

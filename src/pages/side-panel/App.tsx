@@ -13,6 +13,7 @@ import { toast } from "sonner";
 
 const App = () => {
   const [sheetInfos, setSheetInfos] = useState<SheetInfos>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const init = async () => {
@@ -21,6 +22,7 @@ const App = () => {
         const fetchedSheetInfos = await fetchSheetInfosFromUrl(url.trim());
         setSheetInfos(fetchedSheetInfos);
         // setSheetInfos(DummySheetInfos);
+        setIsLoading(false);
       } catch {
         toast("データ取得に失敗しました");
       }
@@ -34,6 +36,8 @@ const App = () => {
       inputs,
     });
   };
+
+  if (isLoading) return <div className="p-4">データ取得中...</div>;
 
   return <SidePanelContent sheetInfos={sheetInfos} onSubmit={handleSubmit} />;
 };
