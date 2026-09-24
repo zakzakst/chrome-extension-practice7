@@ -2,13 +2,16 @@
 
 import { SidePanelContent } from "@/components/page-content/SidePanelContent";
 import type { FormItemInput } from "@/components/page-content/SidePanelContent";
+import { DummySheetInfos } from "@/mocks/data";
 
 const App = () => {
   const handleSubmit = (inputs: FormItemInput[]) => {
     console.log(inputs);
   };
 
-  return <SidePanelContent onSubmit={handleSubmit} />;
+  return (
+    <SidePanelContent sheetInfos={DummySheetInfos} onSubmit={handleSubmit} />
+  );
 };
 
 export default App;

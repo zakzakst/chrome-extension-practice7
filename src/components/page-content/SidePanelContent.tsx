@@ -19,9 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Info } from "lucide-react";
-
-import { DummyApiData } from "@/mocks/data";
-import type { FormItem } from "@/mocks/data";
+import type { FormItem, SheetInfos } from "@/types/data";
 
 const FormItemIdPrefix = "form-item-";
 
@@ -32,22 +30,23 @@ export type FormItemInput = {
 };
 
 interface Props {
+  sheetInfos: SheetInfos;
   onSubmit: (inputs: FormItemInput[]) => void;
 }
 
-export const SidePanelContent = ({ onSubmit }: Props) => {
+export const SidePanelContent = ({ sheetInfos, onSubmit }: Props) => {
   const [selectedSheet, setSelectedSheet] = useState<string | null>(null);
   const [selectedPage, setSelectedPage] = useState<string | null>(null);
   const formElRef = useRef<HTMLDivElement>(null);
 
   const sheetNames = useMemo<string[]>(() => {
-    const result = DummyApiData.map((data) => data.sheetName);
+    const result = sheetInfos.map((data) => data.sheetName);
     return result;
   }, []);
 
   const pageNames = useMemo<string[]>(() => {
-    const sheetData = DummyApiData.find(
-      (data) => data.sheetName === selectedSheet,
+    const sheetData = sheetInfos.find(
+      (info) => info.sheetName === selectedSheet,
     );
     if (!sheetData) return [];
     const pages = [...new Set(sheetData.formItems.map((item) => item.page))];
@@ -56,8 +55,8 @@ export const SidePanelContent = ({ onSubmit }: Props) => {
 
   const formItems = useMemo<FormItem[]>(() => {
     if (!selectedSheet || !selectedPage) return [];
-    const sheetData = DummyApiData.find(
-      (data) => data.sheetName === selectedSheet,
+    const sheetData = sheetInfos.find(
+      (info) => info.sheetName === selectedSheet,
     );
     if (!sheetData) return [];
     const result = sheetData.formItems.filter(
@@ -75,7 +74,6 @@ export const SidePanelContent = ({ onSubmit }: Props) => {
   );
 
   const handleClick = useCallback(() => {
-    // TODO: 現在の入力値を取得して実行するデータを作成（セレクタと値の配列）
     const formItemInputs: FormItemInput[] = [];
     formItems.forEach((item) => {
       const id = `#${FormItemIdPrefix}${item.label}`;

@@ -1,17 +1,6 @@
-export type FormItem = {
-  page: string;
-  label: string;
-  selector: string;
-  type: "text" | "checkbox";
-  defaultValue: string | boolean;
-};
+import type { SheetInfos } from "@/types/data";
 
-export type ApiData = {
-  sheetName: string;
-  formItems: FormItem[];
-}[];
-
-export const DummyApiData: ApiData = [
+export const DummySheetInfos: SheetInfos = [
   {
     sheetName: "申し込み",
     formItems: [
