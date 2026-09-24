@@ -53,4 +53,23 @@ export const DummySheetInfos: SheetInfos = [
       },
     ],
   },
+  {
+    sheetName: "挙動テスト用",
+    formItems: [
+      {
+        page: "ページ1",
+        label: "テキスト",
+        selector: "#test-input",
+        type: "text",
+        defaultValue: "keyword",
+      },
+      {
+        page: "ページ1",
+        label: "チェックボックス",
+        selector: "#test-checkbox",
+        type: "checkbox",
+        defaultValue: true,
+      },
+    ],
+  },
 ];

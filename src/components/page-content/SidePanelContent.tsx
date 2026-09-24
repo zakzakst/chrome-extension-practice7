@@ -42,7 +42,7 @@ export const SidePanelContent = ({ sheetInfos, onSubmit }: Props) => {
   const sheetNames = useMemo<string[]>(() => {
     const result = sheetInfos.map((data) => data.sheetName);
     return result;
-  }, []);
+  }, [sheetInfos]);
 
   const pageNames = useMemo<string[]>(() => {
     const sheetData = sheetInfos.find(
@@ -51,7 +51,7 @@ export const SidePanelContent = ({ sheetInfos, onSubmit }: Props) => {
     if (!sheetData) return [];
     const pages = [...new Set(sheetData.formItems.map((item) => item.page))];
     return pages;
-  }, [selectedSheet]);
+  }, [sheetInfos, selectedSheet]);
 
   const formItems = useMemo<FormItem[]>(() => {
     if (!selectedSheet || !selectedPage) return [];
@@ -63,7 +63,7 @@ export const SidePanelContent = ({ sheetInfos, onSubmit }: Props) => {
       (item) => item.page === selectedPage,
     );
     return result;
-  }, [selectedSheet, selectedPage]);
+  }, [sheetInfos, selectedSheet, selectedPage]);
 
   const handleChangeSelectedSheet = useCallback(
     (value: string) => {
