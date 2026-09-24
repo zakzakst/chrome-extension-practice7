@@ -137,7 +137,7 @@ export const SidePanelContent = ({ sheetInfos, onSubmit }: Props) => {
         {formItems.map((item) => (
           <div
             key={item.label}
-            className="grid grid-cols-[max-content_1fr] items-center gap-4"
+            className="grid grid-cols-[120px_1fr] items-center gap-4"
           >
             <div className="flex items-center gap-1">
               {item.label}

@@ -11,7 +11,7 @@ export default defineManifest({
     // "bookmarks",
     // "tabs",
     // "tabGroups",
-    // "storage",
+    "storage",
   ],
 
   icons: {
