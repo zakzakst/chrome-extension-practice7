@@ -11,6 +11,7 @@ chrome.runtime.onMessage.addListener((message) => {
         input.selector,
       ) as HTMLInputElement;
       if (targetEl) {
+        // TODO: storeなどJSでフォームの入力値を管理している場合にも反映されるか確認する
         if (input.type === "text") {
           targetEl.value = input.value as string;
         }
