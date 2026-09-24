@@ -60,7 +60,7 @@ export const DummyApiData: ApiData = [
         label: "確認しました",
         selector: "#main .confirm-check",
         type: "checkbox",
-        defaultValue: true,
+        defaultValue: false,
       },
     ],
   },
