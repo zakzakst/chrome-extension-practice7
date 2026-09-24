@@ -1,9 +1,14 @@
 // NOTE: デプロイしなくてもUI確認できるよう、chrome拡張特有の処理は記述しない。※propsで連携する
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -13,14 +18,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
+import { Info } from "lucide-react";
 
 import { DummyApiData } from "@/mocks/data";
 import type { FormItem } from "@/mocks/data";
 
-export const SidePanelContent = () => {
+const FormItemIdPrefix = "form-item-";
+
+export type FormItemInput = {
+  type: string;
+  selector: string;
+  value: string | boolean;
+};
+
+interface Props {
+  onSubmit: (inputs: FormItemInput[]) => void;
+}
+
+export const SidePanelContent = ({ onSubmit }: Props) => {
   const [selectedSheet, setSelectedSheet] = useState<string | null>(null);
   const [selectedPage, setSelectedPage] = useState<string | null>(null);
+  const formElRef = useRef<HTMLDivElement>(null);
 
   const sheetNames = useMemo<string[]>(() => {
     const result = DummyApiData.map((data) => data.sheetName);
@@ -58,12 +76,33 @@ export const SidePanelContent = () => {
 
   const handleClick = useCallback(() => {
     // TODO: 現在の入力値を取得して実行するデータを作成（セレクタと値の配列）
-    toast("ボタンクリック");
-  }, []);
+    const formItemInputs: FormItemInput[] = [];
+    formItems.forEach((item) => {
+      const id = `#${FormItemIdPrefix}${item.label}`;
+      const targetEl = formElRef.current?.querySelector(id) as
+        | HTMLInputElement
+        | HTMLButtonElement;
+      const dataSlot = targetEl.dataset.slot;
+      if (dataSlot === "input") {
+        formItemInputs.push({
+          type: item.type,
+          selector: item.selector,
+          value: targetEl.value,
+        });
+      }
+      if (dataSlot === "checkbox") {
+        formItemInputs.push({
+          type: item.type,
+          selector: item.selector,
+          value: targetEl.getAttribute("aria-checked") === "true",
+        });
+      }
+    });
+    onSubmit(formItemInputs);
+  }, [formElRef, formItems]);
 
   return (
     <div className="p-4">
-      {/* <div>{JSON.stringify(formItems)}</div> */}
       <div className="grid grid-cols-1 gap-2">
         <Select onValueChange={handleChangeSelectedSheet}>
           <SelectTrigger className="w-45">
@@ -96,20 +135,35 @@ export const SidePanelContent = () => {
         </Select>
       </div>
 
-      <div className="mt-6 grid grid-cols-1 gap-2">
+      <div className="mt-6 grid grid-cols-1 gap-2" ref={formElRef}>
         {formItems.map((item) => (
           <div
             key={item.label}
-            className="grid grid-cols-[max-content_1fr] items-center gap-2"
+            className="grid grid-cols-[max-content_1fr] items-center gap-4"
           >
-            {/* TODO: 横着してtitle属性につけているが、インフォメーションアイコンをクリックするとポップオーバーとかにしたい */}
-            <div title={item.selector}>{item.label}</div>
+            <div className="flex items-center gap-1">
+              {item.label}
+              <HoverCard>
+                <HoverCardTrigger>
+                  <Info className="h-4 w-4 text-gray-500" />
+                </HoverCardTrigger>
+                <HoverCardContent className="w-auto">
+                  {item.selector}
+                </HoverCardContent>
+              </HoverCard>
+            </div>
             <div>
               {item.type === "text" && (
-                <Input defaultValue={item.defaultValue.toString()} />
+                <Input
+                  id={`${FormItemIdPrefix}${item.label}`}
+                  defaultValue={item.defaultValue.toString()}
+                />
               )}
               {item.type === "checkbox" && (
-                <Checkbox defaultChecked={Boolean(item.defaultValue)} />
+                <Checkbox
+                  id={`${FormItemIdPrefix}${item.label}`}
+                  defaultChecked={Boolean(item.defaultValue)}
+                />
               )}
             </div>
           </div>
